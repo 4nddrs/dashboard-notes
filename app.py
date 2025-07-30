@@ -8,20 +8,24 @@ import pytz
 
 # Inicializa Firebase
 
+# Cargar la variable de entorno
 cred_json = os.environ.get("FIREBASE_CREDENTIALS_JSON")
 if not cred_json:
     raise ValueError("FIREBASE_CREDENTIALS_JSON no está configurada.")
 
+# Parsear y corregir la private_key
 credentials_dict = json.loads(cred_json)
+credentials_dict["private_key"] = credentials_dict["private_key"].replace("\\n", "\n")
+
+# Inicializar Firebase
 cred = credentials.Certificate(credentials_dict)
-
-
-# cred = credentials.Certificate('firebase_config.json')
-
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+# Crear la app Flask
 app = Flask(__name__)
+
+# cred = credentials.Certificate('firebase_config.json')
 
 
 @app.route("/")
